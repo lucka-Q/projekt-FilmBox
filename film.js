@@ -104,3 +104,74 @@ const filmy = [
 		premiera: '2022-12-24',
 	},
 ]
+
+
+const theMovieId = location.hash.substring(1);
+var theMovie = filmy.find(movie => theMovieId === movie.id)
+console.log(theMovie)
+
+const movieDetail = document.querySelector("#detail-filmu")
+const movieImage = movieDetail.querySelector("img")
+const movieTitle = movieDetail.querySelector(".card-title")
+const movieText = movieDetail.querySelector(".card-text")
+const moviePremiere = movieDetail.querySelector("#premiera")
+
+console.log(movieImage)
+console.log(movieTitle)
+console.log(movieText)
+
+movieImage.src = theMovie.plakat.url
+movieImage.width = theMovie.plakat.sirka
+movieImage.height = theMovie.plakat.vyska
+
+movieTitle.innerHTML = theMovie.nazev
+movieText.innerHTML = theMovie.popis
+
+const premiereDate = dayjs(theMovie.premiera)
+const premiereDiff = premiereDate.diff(dayjs(), 'days')
+if (premiereDiff >= 0 ) {
+	moviePremiere.innerHTML = `Premiéra <strong>${dayjs(theMovie.premiera).format(
+		'D. M. YYYY'
+	)}</strong>, což je za ${premiereDiff} dní`
+} else if (premiereDiff == 0) {
+	moviePremiere.innerHTML = `Premiéra <strong>${dayjs(theMovie.premiera).format(
+		'D. M. YYYY'
+	)}</strong>, což je dnes`
+} else {
+	moviePremiere.innerHTML = `Premiéra <strong>${dayjs(theMovie.premiera).format(
+		'D. M. YYYY'
+	)}</strong>, což bylo před ${-1 * premiereDiff} dní`
+}
+
+const noteForm = document.querySelector("#note-form")
+const messageInput = noteForm.querySelector("#message-input")
+const termsCheckbox = noteForm.querySelector("#terms-checkbox")
+
+const invalidClass = "is-invalid"
+
+noteForm.onsubmit = () => {
+	const theMessage = messageInput.value
+	const termsChecked = termsCheckbox.checked
+	if (termsChecked && termsCheckbox.classList.contains(invalidClass)) {
+		termsCheckbox.classList.remove(invalidClass)
+	} 
+	if (!termsChecked && !termsCheckbox.classList.contains(invalidClass)) {
+		termsCheckbox.classList.add(invalidClass)
+	}
+	if (theMessage == "") {
+		console.log("empty")
+		if (!messageInput.classList.contains(invalidClass)) {
+			messageInput.classList.add(invalidClass)
+		}
+		messageInput.focus()
+	} else {
+		if (messageInput.classList.contains(invalidClass)) {
+			messageInput.classList.remove(invalidClass)
+		}
+	}
+	if (termsChecked && theMessage != "") {
+		console.log(theMessage)
+		noteForm.innerHTML = `<p class="card-text">${theMessage}</p>`
+	}
+}
+
